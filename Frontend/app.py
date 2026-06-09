@@ -3,6 +3,13 @@ import sys
 import os
 
 # ----------------------------------
+# STREAMLIT SECRETS
+# ----------------------------------
+HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
+MODEL_NAME = st.secrets["MODEL_NAME"]
+EMBEDDING_MODEL = st.secrets["EMBEDDING_MODEL"]
+
+# ----------------------------------
 # IMPORT BACKEND
 # ----------------------------------
 sys.path.append(
@@ -32,9 +39,33 @@ st.title("🏋️ Gym AI Chatbot")
 st.caption("Your Personal Fitness Assistant 💪")
 
 # ----------------------------------
+# SIDEBAR
+# ----------------------------------
+with st.sidebar:
+
+    st.header("⚙️ Settings")
+
+    st.success("Gym AI is running")
+
+    st.write(f"Model: {MODEL_NAME}")
+
+    if st.button("🧹 Clear Chat"):
+
+        st.session_state.messages = [
+            {
+                "role": "assistant",
+                "content":
+                "Chat cleared. How can I help you today? 💪"
+            }
+        ]
+
+        st.rerun()
+
+# ----------------------------------
 # CHAT MEMORY
 # ----------------------------------
 if "messages" not in st.session_state:
+
     st.session_state.messages = [
         {
             "role": "assistant",
@@ -44,34 +75,12 @@ if "messages" not in st.session_state:
     ]
 
 # ----------------------------------
-# SIDEBAR
-# ----------------------------------
-with st.sidebar:
-
-    st.header("⚙️ Settings")
-
-    st.info(
-        "Answers are generated using the gym PDF knowledge base."
-    )
-
-    if st.button("🧹 Clear Chat"):
-        st.session_state.messages = [
-            {
-                "role": "assistant",
-                "content":
-                "Chat cleared. How can I help you today? 💪"
-            }
-        ]
-        st.rerun()
-
-# ----------------------------------
 # DISPLAY CHAT
 # ----------------------------------
 for message in st.session_state.messages:
 
-    with st.chat_message(
-        message["role"]
-    ):
+    with st.chat_message(message["role"]):
+
         st.markdown(
             message["content"]
         )
@@ -80,7 +89,7 @@ for message in st.session_state.messages:
 # USER INPUT
 # ----------------------------------
 user_input = st.chat_input(
-    "Ask about workouts, diet, membership, timings..."
+    "Ask about workouts, diet plans, memberships, gym timings..."
 )
 
 # ----------------------------------
@@ -96,17 +105,17 @@ if user_input:
     )
 
     with st.chat_message("user"):
+
         st.markdown(user_input)
 
-    # Build conversation history
     history = "\n".join([
-        f"{m['role']}: {m['content']}"
-        for m in st.session_state.messages[-10:]
+        f"{msg['role']}: {msg['content']}"
+        for msg in st.session_state.messages[-10:]
     ])
 
     with st.chat_message("assistant"):
 
-        with st.spinner("Thinking..."):
+        with st.spinner("Thinking... 💭"):
 
             try:
 
@@ -118,7 +127,7 @@ if user_input:
             except Exception as e:
 
                 response = (
-                    f"Error: {str(e)}"
+                    f"❌ Error: {str(e)}"
                 )
 
             st.markdown(response)
