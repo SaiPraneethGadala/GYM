@@ -1,3 +1,9 @@
+🚀 Live Demo
+
+Try the application here:
+
+https://7peeuc4hy9ogmuicsftznj.streamlit.app/
+
 # 🏋️ Gym AI Chatbot
 
 Gym AI Chatbot is a Retrieval-Augmented Generation (RAG) based fitness assistant that answers questions about workouts, diet plans, gym memberships, and gym timings using information stored in PDF documents.
