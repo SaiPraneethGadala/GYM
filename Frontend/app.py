@@ -5,9 +5,20 @@ import os
 # ----------------------------------
 # STREAMLIT SECRETS
 # ----------------------------------
-HUGGINGFACE_API_KEY = st.secrets["HUGGINGFACE_API_KEY"]
-MODEL_NAME = st.secrets["MODEL_NAME"]
-EMBEDDING_MODEL = st.secrets["EMBEDDING_MODEL"]
+HUGGINGFACE_API_KEY = st.secrets.get(
+    "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",
+    ""
+)
+
+MODEL_NAME = st.secrets.get(
+    "MODEL_NAME",
+    "google/flan-t5-large"
+)
+
+EMBEDDING_MODEL = st.secrets.get(
+    "EMBEDDING_MODEL",
+    "sentence-transformers/all-MiniLM-L6-v2"
+)
 
 # ----------------------------------
 # IMPORT BACKEND
@@ -45,9 +56,14 @@ with st.sidebar:
 
     st.header("⚙️ Settings")
 
-    st.success("Gym AI is running")
+    st.success("Gym AI Running")
 
     st.write(f"Model: {MODEL_NAME}")
+
+    if not HUGGINGFACE_API_KEY:
+        st.warning(
+            "Hugging Face API key not found in Streamlit Secrets."
+        )
 
     if st.button("🧹 Clear Chat"):
 
@@ -79,8 +95,9 @@ if "messages" not in st.session_state:
 # ----------------------------------
 for message in st.session_state.messages:
 
-    with st.chat_message(message["role"]):
-
+    with st.chat_message(
+        message["role"]
+    ):
         st.markdown(
             message["content"]
         )
@@ -105,7 +122,6 @@ if user_input:
     )
 
     with st.chat_message("user"):
-
         st.markdown(user_input)
 
     history = "\n".join([
@@ -115,7 +131,9 @@ if user_input:
 
     with st.chat_message("assistant"):
 
-        with st.spinner("Thinking... 💭"):
+        with st.spinner(
+            "Thinking... 💭"
+        ):
 
             try:
 
